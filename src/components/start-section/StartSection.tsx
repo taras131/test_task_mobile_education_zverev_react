@@ -6,8 +6,8 @@ import Element from "../element/Element";
 interface IStartSection {
     elements: IElement[],
     draggableElement: IElement | null,
-    onDrag: (e: any, element: IElement) => void,
-    onDragEnter: (element: IElement) => void,
+    onDrag: (e: React.SyntheticEvent, element: IElement) => void,
+    onDragEnter: (e: React.SyntheticEvent, element: IElement) => void,
 }
 
 const StartSection: FC<IStartSection> = ({

@@ -6,10 +6,9 @@ import Element from "../element/Element";
 interface IFinishSection {
     elements: IElement[],
     draggableElement: IElement | null,
-    onDrag: (e: any, element: IElement) => void,
-    onDrop: () => void,
-    onDragOver: (e: any) => void,
-    onDragEnter: (element: IElement) => void,
+    onDrag: (e: React.SyntheticEvent, element: IElement) => void,
+    onDrop: (e: React.SyntheticEvent) => void,
+    onDragEnter: (e: React.SyntheticEvent, element: IElement) => void,
 }
 
 const getCountElement = (elements: IElement[]): number => {
@@ -25,7 +24,6 @@ const FinishSection: FC<IFinishSection> = ({
                                                draggableElement,
                                                onDrag,
                                                onDrop,
-                                               onDragOver,
                                                onDragEnter,
                                            }) => {
     const figureCount = getCountElement(elements)
@@ -36,11 +34,11 @@ const FinishSection: FC<IFinishSection> = ({
                                                       onDragEnter={onDragEnter}/>)
     return (
         <section className={finishSectionStyles.wrapper}
+                 id={"FinishSection"}
                  onDrop={onDrop}
-                 onDragOver={onDragOver}>
+        >
             <h3> {figureCount ? `Фигур в зоне для перетаскивания: ${figureCount}` : ''}</h3>
-            <div className={finishSectionStyles.content}
-                 onDrop={onDrop}>
+            <div className={finishSectionStyles.content}>
                 {figuresItem}
             </div>
         </section>

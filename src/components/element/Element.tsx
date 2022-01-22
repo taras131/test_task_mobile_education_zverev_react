@@ -5,9 +5,9 @@ import {IElement} from "../../models";
 
 interface IElementProps {
     element: IElement,
-    onDrag: (e: any, element: IElement) => void,
+    onDrag: (e: React.SyntheticEvent, element: IElement) => void,
     draggableElement: IElement | null,
-    onDragEnter: (element: IElement) => void,
+    onDragEnter: (e: React.SyntheticEvent, element: IElement) => void,
 }
 
 const Element: FC<IElementProps> = ({
@@ -17,7 +17,7 @@ const Element: FC<IElementProps> = ({
                                         onDragEnter
                                     }) => {
     return (
-        <div className={figureStyles.wrapper} onDragEnter={() => onDragEnter(element)}>
+        <div className={figureStyles.wrapper} onDragEnter={(e) => onDragEnter(e, element)}>
             {element.color && (
                 <div className={classNames(figureStyles.content, figureStyles.cursor_pointer, {
                     [figureStyles.circle]: element.type === 'circle',
