@@ -3,7 +3,7 @@ import appStyles from "./App.module.css";
 import FinishSection from "../finish-section/FinishSection";
 import StartSection from "../start-section/StartSection";
 import {IElement} from "../../models";
-import {getFinishElements, startElementList} from "../../data";
+import {createNewEmptyElement, getFinishElements, startElementList} from "../../data";
 
 const App: FC = () => {
     const [finishContainerElements, setFinishContainerElements] = useState<IElement[]>(getFinishElements())
@@ -11,19 +11,28 @@ const App: FC = () => {
     const [draggableFinishElement, setDraggableFinishElement] = useState<IElement | null>(null);
     const [draggableStartElement, setDraggableStartElement] = useState<IElement | null>(null);
     const [enterElement, setEnterElement] = useState<IElement | null>(null);
-    const onDragFinishElement = (e: any, element: IElement) => {
+    const onDragFinishElement = (e: React.SyntheticEvent, element: IElement) => {
         e.preventDefault()
         if (!draggableFinishElement) setDraggableFinishElement(element)
     }
-    const onDragStartElement = (e: any, element: IElement) => {
+    const onDragStartElement = (e: React.SyntheticEvent, element: IElement) => {
         e.preventDefault()
         if (!draggableStartElement) setDraggableStartElement(element)
     }
     const onDragEnd = () => {
+        if (!enterElement && draggableFinishElement) {
+            const draggableElementIndex = finishContainerElements.indexOf(draggableFinishElement)
+            setStartContainerElements(prev => [...prev, draggableFinishElement])
+            setFinishContainerElements(prev => [...prev.map((item, index) => {
+                if (index === draggableElementIndex) return createNewEmptyElement()
+                return item
+            })])
+            setDraggableFinishElement(null)
+        }
         if (draggableFinishElement) setDraggableFinishElement(null)
         if (draggableStartElement) setDraggableStartElement(null)
     }
-    const onDragOver = (e: any) => {
+    const onDragOver = (e: React.SyntheticEvent) => {
         e.preventDefault();
     }
     const onDrop = () => {
@@ -45,19 +54,23 @@ const App: FC = () => {
             })])
             setDraggableStartElement(null)
         }
+
     }
-    const onDragEnter = (element: IElement) => {
+    const onDragEnter = (e: React.SyntheticEvent,element: IElement | null) => {
+        e.stopPropagation()
         setEnterElement(element)
     }
     return (
-        <div className={appStyles.wrapper} onDragEnd={onDragEnd}>
+        <div className={appStyles.wrapper} onDragEnd={onDragEnd} onDragOver={onDragOver}
+             onDragEnter={(e) => onDragEnter(e,null)}
+        >
             <FinishSection
                 elements={finishContainerElements}
                 draggableElement={draggableFinishElement || draggableStartElement}
                 onDrag={onDragFinishElement}
                 onDrop={onDrop}
-                onDragOver={onDragOver}
                 onDragEnter={onDragEnter}
+
             />
             <StartSection
                 elements={startContainerElements}
